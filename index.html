@@ -2,13 +2,28 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
     <title>Boîtes Surprises Fête des Mères 🎁</title>
     <style>
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      html {
+        touch-action: manipulation;
+        -webkit-text-size-adjust: 100%;
       }
 
       body {
@@ -101,11 +116,10 @@
       }
 
       .made-by {
-        font-size: 0.9rem;
+        font-size: 1.1rem;
         color: #9333ea;
         font-style: italic;
         margin-top: 8px;
-        font-size: 20px;
         text-decoration: underline;
       }
 
@@ -164,7 +178,7 @@
       .boxes-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        gap: 15px;
         margin-bottom: 30px;
       }
 
@@ -172,24 +186,27 @@
         background: rgba(255, 255, 255, 0.85);
         backdrop-filter: blur(10px);
         border-radius: 12px;
-        padding: 20px 15px;
+        padding: 25px 20px;
         text-align: center;
         cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid rgba(236, 72, 153, 0.2);
+        transition: all 0.2s ease;
+        border: 3px solid rgba(236, 72, 153, 0.3);
         position: relative;
         overflow: hidden;
-        min-height: 140px;
+        min-height: 160px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        -webkit-tap-highlight-color: transparent;
-        user-select: none;
+        touch-action: manipulation;
+        /* Ensure proper touch target size */
+        min-width: 120px;
       }
 
-      .surprise-box:active {
+      .surprise-box.touching {
         transform: scale(0.95);
+        background: rgba(236, 72, 153, 0.1);
+        border-color: #ec4899;
       }
 
       .surprise-box:hover {
@@ -213,7 +230,7 @@
       }
 
       .box-icon {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
         margin-bottom: 10px;
         animation: bounce 2s ease-in-out infinite;
       }
@@ -229,7 +246,7 @@
       }
 
       .box-label {
-        font-size: 0.95rem;
+        font-size: 1rem;
         color: #ec4899;
         font-weight: 500;
         line-height: 1.2;
@@ -255,15 +272,15 @@
       .box-opened {
         background: linear-gradient(
           135deg,
-          rgba(236, 72, 153, 0.1),
-          rgba(244, 114, 182, 0.1)
+          rgba(236, 72, 153, 0.15),
+          rgba(244, 114, 182, 0.15)
         );
         border-color: #ec4899;
         transform: scale(1.02);
       }
 
       .content-icon {
-        font-size: 2rem;
+        font-size: 2.2rem;
         margin-bottom: 10px;
         animation: contentPop 0.6s ease-out;
       }
@@ -289,7 +306,7 @@
       }
 
       .content-message {
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         color: #4b5563;
         line-height: 1.4;
         text-align: center;
@@ -399,24 +416,24 @@
 
         .boxes-grid {
           grid-template-columns: 1fr;
-          gap: 15px;
+          gap: 20px;
         }
 
         .surprise-box {
-          min-height: 160px;
-          padding: 25px 20px;
+          min-height: 180px;
+          padding: 30px 25px;
         }
 
         .box-icon {
-          font-size: 2.5rem;
+          font-size: 3rem;
         }
 
         .box-label {
-          font-size: 1rem;
+          font-size: 1.1rem;
         }
 
         .content-message {
-          font-size: 0.85rem;
+          font-size: 0.9rem;
         }
       }
 
@@ -428,12 +445,12 @@
         }
 
         .surprise-box {
-          min-height: 120px;
-          padding: 15px 10px;
+          min-height: 140px;
+          padding: 20px 15px;
         }
 
         .box-icon {
-          font-size: 2rem;
+          font-size: 2.2rem;
         }
       }
 
@@ -441,7 +458,7 @@
       @media (min-width: 481px) and (max-width: 768px) {
         .boxes-grid {
           grid-template-columns: repeat(2, 1fr);
-          gap: 15px;
+          gap: 20px;
         }
 
         .main-title {
@@ -458,12 +475,12 @@
 
         .boxes-grid {
           grid-template-columns: repeat(3, 1fr);
-          gap: 20px;
+          gap: 25px;
         }
 
         .surprise-box {
-          min-height: 180px;
-          padding: 30px 20px;
+          min-height: 200px;
+          padding: 35px 25px;
         }
 
         .main-title {
@@ -482,9 +499,26 @@
           transform: translateY(0);
         }
       }
+
+      /* Debug indicator for mobile */
+      .debug-touch {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        z-index: 9999;
+        display: none;
+      }
     </style>
   </head>
   <body>
+    <!-- Debug indicator -->
+    <div class="debug-touch" id="debugTouch">Touch: None</div>
+
     <!-- Floating hearts -->
     <div class="heart" style="left: 10%; animation-delay: 0s">💕</div>
     <div class="heart" style="left: 30%; animation-delay: 2s">💖</div>
@@ -496,7 +530,7 @@
       <header class="header">
         <h1 class="main-title">Boîtes Surprises Fête des Mères! 🎁</h1>
         <p class="subtitle">
-          Clique sur chaque boîte pour découvrir tes surprises spéciales
+          Touche chaque boîte pour découvrir tes surprises spéciales
         </p>
         <p class="game-instruction">
           🎮 Ouvre les 6 boîtes pour débloquer la surprise finale!
@@ -511,107 +545,8 @@
       <div class="progress-text" id="progressText">0 sur 6 boîtes ouvertes</div>
 
       <!-- Game boxes -->
-      <div class="boxes-grid">
-        <!-- Box 1 -->
-        <div class="surprise-box box-closed" onclick="openBox(this, 1)">
-          <div class="box-preview">
-            <div class="box-icon">🎁</div>
-            <div class="box-label">Ton Amour</div>
-          </div>
-          <div class="box-content">
-            <div class="content-icon">💝</div>
-            <div class="content-title">Ton Amour Infini</div>
-            <div class="content-message">
-              Ton amour a été mon étoile guide à travers chaque moment de ma
-              vie. Il est chaleureux, inconditionnel, et le plus beau cadeau que
-              j'aie jamais reçu.
-            </div>
-          </div>
-        </div>
-
-        <!-- Box 2 -->
-        <div class="surprise-box box-closed" onclick="openBox(this, 2)">
-          <div class="box-preview">
-            <div class="box-icon">🎁</div>
-            <div class="box-label">Ta Sagesse</div>
-          </div>
-          <div class="box-content">
-            <div class="content-icon">🌟</div>
-            <div class="content-title">Ta Douce Sagesse</div>
-            <div class="content-message">
-              Chaque leçon que tu m'as enseignée a façonné qui je suis
-              aujourd'hui. Tes paroles sages continuent de me guider dans le
-              voyage de la vie.
-            </div>
-          </div>
-        </div>
-
-        <!-- Box 3 -->
-        <div class="surprise-box box-closed" onclick="openBox(this, 3)">
-          <div class="box-preview">
-            <div class="box-icon">🎁</div>
-            <div class="box-label">Tes Câlins</div>
-          </div>
-          <div class="box-content">
-            <div class="content-icon">🤗</div>
-            <div class="content-title">Tes Tendres Étreintes</div>
-            <div class="content-message">
-              Tes câlins ont le pouvoir magique de guérir toute blessure et
-              d'apaiser toute tempête. Ils sont mon refuge, peu importe où je
-              vais.
-            </div>
-          </div>
-        </div>
-
-        <!-- Box 4 -->
-        <div class="surprise-box box-closed" onclick="openBox(this, 4)">
-          <div class="box-preview">
-            <div class="box-icon">🎁</div>
-            <div class="box-label">Ta Force</div>
-          </div>
-          <div class="box-content">
-            <div class="content-icon">💪</div>
-            <div class="content-title">Ta Force Incroyable</div>
-            <div class="content-message">
-              Tu m'as montré ce à quoi ressemble la vraie force. Ta résilience
-              et ton courage m'inspirent à affronter chaque défi avec confiance.
-            </div>
-          </div>
-        </div>
-
-        <!-- Box 5 -->
-        <div class="surprise-box box-closed" onclick="openBox(this, 5)">
-          <div class="box-preview">
-            <div class="box-icon">🎁</div>
-            <div class="box-label">Ton Sourire</div>
-          </div>
-          <div class="box-content">
-            <div class="content-icon">😊</div>
-            <div class="content-title">Ton Beau Sourire</div>
-            <div class="content-message">
-              Ton sourire illumine chaque pièce et égaie mes jours les plus
-              sombres. C'est un rappel que la joie peut être trouvée dans chaque
-              moment que nous partageons.
-            </div>
-          </div>
-        </div>
-
-        <!-- Box 6 -->
-        <div class="surprise-box box-closed" onclick="openBox(this, 6)">
-          <div class="box-preview">
-            <div class="box-icon">🎁</div>
-            <div class="box-label">Ma Gratitude</div>
-          </div>
-          <div class="box-content">
-            <div class="content-icon">🙏</div>
-            <div class="content-title">Éternellement Reconnaissant</div>
-            <div class="content-message">
-              Merci d'être non seulement ma mère, mais aussi mon premier
-              professeur, mon plus grand soutien, et ma plus chère amie. Je
-              t'aime infiniment!
-            </div>
-          </div>
-        </div>
+      <div class="boxes-grid" id="boxesGrid">
+        <!-- Boxes will be generated by JavaScript -->
       </div>
 
       <!-- Final surprise (hidden until all boxes are opened) -->
@@ -636,33 +571,176 @@
     <script>
       let openedBoxes = 0;
       const totalBoxes = 6;
+      let touchStartTime = 0;
 
-      // Create sparkles periodically
-      function createSparkle() {
-        const sparkle = document.createElement("div");
-        sparkle.className = "sparkle";
-        sparkle.style.left = Math.random() * 100 + "%";
-        sparkle.style.top = Math.random() * 100 + "%";
-        sparkle.style.animationDelay = Math.random() * 2 + "s";
-        document.body.appendChild(sparkle);
+      // Box data
+      const boxData = [
+        {
+          label: "Ton Amour",
+          icon: "💝",
+          title: "Ton Amour Infini",
+          message:
+            "Ton amour a été mon étoile guide à travers chaque moment de ma vie. Il est chaleureux, inconditionnel, et le plus beau cadeau que j'aie jamais reçu.",
+        },
+        {
+          label: "Ta Sagesse",
+          icon: "🌟",
+          title: "Ta Douce Sagesse",
+          message:
+            "Chaque leçon que tu m'as enseignée a façonné qui je suis aujourd'hui. Tes paroles sages continuent de me guider dans le voyage de la vie.",
+        },
+        {
+          label: "Tes Câlins",
+          icon: "🤗",
+          title: "Tes Tendres Étreintes",
+          message:
+            "Tes câlins ont le pouvoir magique de guérir toute blessure et d'apaiser toute tempête. Ils sont mon refuge, peu importe où je vais.",
+        },
+        {
+          label: "Ta Force",
+          icon: "💪",
+          title: "Ta Force Incroyable",
+          message:
+            "Tu m'as montré ce à quoi ressemble la vraie force. Ta résilience et ton courage m'inspirent à affronter chaque défi avec confiance.",
+        },
+        {
+          label: "Ton Sourire",
+          icon: "😊",
+          title: "Ton Beau Sourire",
+          message:
+            "Ton sourire illumine chaque pièce et égaie mes jours les plus sombres. C'est un rappel que la joie peut être trouvée dans chaque moment que nous partageons.",
+        },
+        {
+          label: "Ma Gratitude",
+          icon: "🙏",
+          title: "Éternellement Reconnaissant",
+          message:
+            "Merci d'être non seulement ma mère, mais aussi mon premier professeur, mon plus grand soutien, et ma plus chère amie. Je t'aime infiniment!",
+        },
+      ];
+
+      // Create boxes dynamically
+      function createBoxes() {
+        const grid = document.getElementById("boxesGrid");
+
+        boxData.forEach((data, index) => {
+          const box = document.createElement("div");
+          box.className = "surprise-box box-closed";
+          box.setAttribute("data-box-id", index);
+
+          box.innerHTML = `
+                    <div class="box-preview">
+                        <div class="box-icon">🎁</div>
+                        <div class="box-label">${data.label}</div>
+                    </div>
+                    <div class="box-content">
+                        <div class="content-icon">${data.icon}</div>
+                        <div class="content-title">${data.title}</div>
+                        <div class="content-message">${data.message}</div>
+                    </div>
+                `;
+
+          grid.appendChild(box);
+
+          // Add event listeners immediately
+          addBoxEventListeners(box, index);
+        });
+      }
+
+      // Add event listeners to a box
+      function addBoxEventListeners(box, index) {
+        let touchStarted = false;
+
+        // Touch events
+        box.addEventListener(
+          "touchstart",
+          function (e) {
+            e.preventDefault();
+            touchStarted = true;
+            touchStartTime = Date.now();
+
+            if (this.classList.contains("box-closed")) {
+              this.classList.add("touching");
+              updateDebug("Touch Start: Box " + (index + 1));
+
+              // Haptic feedback
+              if (navigator.vibrate) {
+                navigator.vibrate(30);
+              }
+            }
+          },
+          { passive: false }
+        );
+
+        box.addEventListener(
+          "touchend",
+          function (e) {
+            e.preventDefault();
+
+            if (touchStarted) {
+              touchStarted = false;
+              this.classList.remove("touching");
+
+              const touchDuration = Date.now() - touchStartTime;
+              updateDebug("Touch End: Duration " + touchDuration + "ms");
+
+              // Only trigger if it was a quick tap (not a long press or scroll)
+              if (
+                touchDuration < 500 &&
+                this.classList.contains("box-closed")
+              ) {
+                setTimeout(() => {
+                  openBox(this, index);
+                }, 50);
+              }
+            }
+          },
+          { passive: false }
+        );
+
+        box.addEventListener("touchcancel", function (e) {
+          touchStarted = false;
+          this.classList.remove("touching");
+          updateDebug("Touch Cancelled");
+        });
+
+        // Mouse events for desktop
+        box.addEventListener("click", function (e) {
+          e.preventDefault();
+          if (this.classList.contains("box-closed")) {
+            openBox(this, index);
+          }
+        });
+
+        // Prevent context menu
+        box.addEventListener("contextmenu", function (e) {
+          e.preventDefault();
+        });
+      }
+
+      // Debug function
+      function updateDebug(message) {
+        const debug = document.getElementById("debugTouch");
+        debug.textContent = message;
+        debug.style.display = "block";
 
         setTimeout(() => {
-          sparkle.remove();
+          debug.style.display = "none";
         }, 2000);
       }
 
-      setInterval(createSparkle, 3000);
-
       // Open box function
-      function openBox(boxElement, boxNumber) {
+      function openBox(boxElement, boxIndex) {
         // Check if box is already opened
         if (boxElement.classList.contains("box-opened")) {
           return;
         }
 
+        updateDebug("Opening Box " + (boxIndex + 1));
+
         // Add haptic feedback for mobile
         if (navigator.vibrate) {
-          navigator.vibrate(50);
+          navigator.vibrate(100);
         }
 
         // Mark box as opened
@@ -670,8 +748,11 @@
         boxElement.classList.add("box-opened");
 
         // Hide preview and show content
-        boxElement.querySelector(".box-preview").style.display = "none";
-        boxElement.querySelector(".box-content").style.display = "block";
+        const preview = boxElement.querySelector(".box-preview");
+        const content = boxElement.querySelector(".box-content");
+
+        if (preview) preview.style.display = "none";
+        if (content) content.style.display = "block";
 
         // Update progress
         openedBoxes++;
@@ -707,37 +788,17 @@
         // Create hearts explosion
         const hearts = ["💖", "💕", "💗", "💝", "🌸", "✨"];
 
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 8; i++) {
           setTimeout(() => {
             const heart = document.createElement("div");
             heart.className = "celebration-heart";
             heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
-            heart.style.left = centerX + (Math.random() - 0.5) * 80 + "px";
-            heart.style.top = centerY + (Math.random() - 0.5) * 40 + "px";
+            heart.style.left = centerX + (Math.random() - 0.5) * 100 + "px";
+            heart.style.top = centerY + (Math.random() - 0.5) * 60 + "px";
             document.body.appendChild(heart);
 
             setTimeout(() => heart.remove(), 3000);
           }, i * 100);
-        }
-
-        // Create sparkles around the box
-        for (let i = 0; i < 3; i++) {
-          setTimeout(() => {
-            const sparkle = document.createElement("div");
-            sparkle.innerHTML = "✨";
-            sparkle.style.cssText = `
-                        position: absolute;
-                        left: ${Math.random() * 100}%;
-                        top: ${Math.random() * 100}%;
-                        font-size: 14px;
-                        pointer-events: none;
-                        animation: sparkle 1.5s ease-out forwards;
-                        z-index: 999;
-                    `;
-            boxElement.appendChild(sparkle);
-
-            setTimeout(() => sparkle.remove(), 1500);
-          }, i * 150);
         }
       }
 
@@ -748,11 +809,11 @@
 
         // Haptic feedback for final surprise
         if (navigator.vibrate) {
-          navigator.vibrate([100, 50, 100, 50, 200]);
+          navigator.vibrate([200, 100, 200, 100, 300]);
         }
 
         // Create massive celebration
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 25; i++) {
           setTimeout(() => {
             const heart = document.createElement("div");
             heart.className = "celebration-heart";
@@ -774,47 +835,32 @@
               symbols[Math.floor(Math.random() * symbols.length)];
             heart.style.left = Math.random() * 100 + "%";
             heart.style.top = Math.random() * 100 + "%";
-            heart.style.fontSize = Math.random() * 15 + 18 + "px";
+            heart.style.fontSize = Math.random() * 15 + 20 + "px";
             document.body.appendChild(heart);
 
             setTimeout(() => heart.remove(), 3000);
-          }, i * 100);
+          }, i * 80);
         }
 
         // Scroll to final surprise
-        finalSurprise.scrollIntoView({ behavior: "smooth" });
+        setTimeout(() => {
+          finalSurprise.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 500);
       }
 
-      // Add touch effects to unopened boxes
-      document.querySelectorAll(".surprise-box").forEach((box) => {
-        box.addEventListener("touchstart", function (e) {
-          e.preventDefault();
-          if (this.classList.contains("box-closed")) {
-            this.style.transform = "scale(0.95)";
-          }
-        });
+      // Create sparkles periodically
+      function createSparkle() {
+        const sparkle = document.createElement("div");
+        sparkle.className = "sparkle";
+        sparkle.style.left = Math.random() * 100 + "%";
+        sparkle.style.top = Math.random() * 100 + "%";
+        sparkle.style.animationDelay = Math.random() * 2 + "s";
+        document.body.appendChild(sparkle);
 
-        box.addEventListener("touchend", function (e) {
-          e.preventDefault();
-          if (this.classList.contains("box-closed")) {
-            this.style.transform = "scale(1)";
-            // Create mini sparkle on touch
-            const sparkle = document.createElement("div");
-            sparkle.innerHTML = "✨";
-            sparkle.style.cssText = `
-                        position: absolute;
-                        top: 10px;
-                        right: 10px;
-                        font-size: 12px;
-                        pointer-events: none;
-                        animation: sparkle 1s ease-out forwards;
-                    `;
-            this.appendChild(sparkle);
-
-            setTimeout(() => sparkle.remove(), 1000);
-          }
-        });
-      });
+        setTimeout(() => {
+          sparkle.remove();
+        }, 2000);
+      }
 
       // Prevent zoom on double tap
       let lastTouchEnd = 0;
@@ -830,8 +876,24 @@
         false
       );
 
-      // Initial page load effect
-      window.addEventListener("load", function () {
+      // Prevent scrolling when touching boxes
+      document.addEventListener(
+        "touchmove",
+        function (e) {
+          if (e.target.closest(".surprise-box")) {
+            e.preventDefault();
+          }
+        },
+        { passive: false }
+      );
+
+      // Initialize everything when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        createBoxes();
+
+        // Start sparkle effect
+        setInterval(createSparkle, 3000);
+
         // Create initial sparkles
         setTimeout(() => {
           for (let i = 0; i < 8; i++) {
@@ -846,6 +908,15 @@
           window.scrollTo(0, 0);
         }, 100);
       });
+
+      // Add touch feedback to the whole page
+      document.addEventListener(
+        "touchstart",
+        function () {
+          updateDebug("Page Touch Detected");
+        },
+        { passive: true }
+      );
     </script>
   </body>
 </html>
